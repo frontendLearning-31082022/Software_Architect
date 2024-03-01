@@ -1,14 +1,21 @@
 package com.example.mvpvm;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
+import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.mvpvm.databinding.ActivityMainBinding;
+import com.example.mvpvm.mvpvm.IView;
+import com.example.mvpvm.mvpvm.Presenter;
+
+public class MainActivity extends AppCompatActivity implements IView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        Presenter presenter=new Presenter(this);
     }
 }
