@@ -1,0 +1,177 @@
+openapi: 3.0.3
+info:
+  title: Система робота-пылесоса
+  version: 0.0.1
+paths:
+  /sensor_stat/temp_inside:
+    get:
+      summary: Метод по получению показаний температуры внутри корпуса робота-пылесоса
+      tags:
+        - Sensors
+      operationId: getTempInside
+      responses:
+        "200" : 
+          description: Успешный ответ с отображением текущей температуры
+          content:
+            adplication/json:
+             schema:
+                type: number
+                example: 38
+        "default" : 
+          description: Оборудование не доступно
+          content: 
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /sensor_stat/set_fan_speed:
+    post:
+      summary: Установка скорости вентилятора в процентах от 0 до 100
+      tags:
+        - Sensors
+      operationId:  setFanSpeed
+      requestBody:
+        content:
+          adplication/json:
+            schema:
+              type: integer
+              maximum: 100
+              minimum: 0
+              example: 38
+      responses:
+        "200" : 
+          description: Скорость лопастей вентилятора успешно установлена
+          content:
+            adplication/json: {}
+        "416" : 
+          description: Величина Скорости лопастей не входит в диапозон 0-100
+          content:
+            adplication/json: {}
+        "default" : 
+          description: Оборудование не доступно
+          content: 
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /sensor_stat/fan_speed:
+    get:
+      summary: Метод по получению показаний скорости вращения кулера внутри робота-пылесоса
+      tags:
+        - Sensors
+      operationId: getFanSpeedInside
+      responses:
+        "200" : 
+          description: Успешный ответ с отображением текущей скорости лопастей вентилятора
+          content:
+            adplication/json:
+             schema:
+                type: number
+                example: 38
+        "default" : 
+          description: Оборудование не доступно
+          content: 
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/getList:
+    get:
+      summary: Метод по получению списка всех пользователей, зарегистрированных в системе текущего робота-пылесоса
+      tags:
+        - Users
+      operationId: getAllUsers
+      responses:
+        "200" : 
+          description: Успешный ответ с отображением списка пользователей
+          content:
+            adplication/json:
+             schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "default" : 
+          description: Оборудование не доступно
+          content: 
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /schedule/deleteEvent/{idEvent}:
+    delete:
+      summary: Удалить событие запланированной уборки
+      tags:
+        - Schedule
+      operationId:  deleteEvent
+      parameters:
+        - name: idEvent
+          in: path
+          description: ID события
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200" : 
+          description: Успешное удаление события
+          content:
+            adplication/json: {}
+        '404':
+          description: Событие не найдено
+          
+  /schedule/cancheEventTime/{idEvent}/{newTime}:
+    patch:
+      summary: Изменить время существующего события
+      tags:
+        - Schedule
+      operationId:  changeTimeEvent
+      parameters:
+        - name: idEvent
+          in: path
+          description: ID события
+          required: true
+          schema:
+            type: integer
+        - name: newTime
+          in: path
+          description: Новое время для события
+          required: true
+          schema:
+            type: string
+            example: 09/09/09 20:00
+      responses:
+        "200" : 
+          description: Успешное изменение времени события
+          content:
+            adplication/json: {}
+        '404':
+          description: Событие не найдено
+        '406':
+          description: Данное время невозможно установить
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 9
+        name:
+          type: string
+          example: Ivan
+        login:
+          type: string
+          example: ivan
+        dateBirth:
+          type: string
+          example: 01.01.1993
+        phone:
+          type: string
+          example: 89999999999
+        email:
+          type: string
+          example: r@gmail.com
+    Error:
+      type: object
+      properties:
+        code_error:
+          type: integer
+          example: 28
+        code_message:
+          type: string
+          example: error
